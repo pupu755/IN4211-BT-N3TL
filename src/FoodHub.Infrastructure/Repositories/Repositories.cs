@@ -116,3 +116,35 @@ internal sealed class DeliveryRepository : IDeliveryRepository
     public Task<Delivery?> GetByOrderIdAsync(Guid orderId, CancellationToken ct = default) =>
         _db.Deliveries.FirstOrDefaultAsync(d => d.OrderId == orderId, ct);
 }
+
+internal sealed class ReviewRepository : IReviewRepository
+{
+    private readonly AppDbContext _db;
+
+    public ReviewRepository(AppDbContext db) => _db = db;
+
+    public Task<Review?> GetByOrderIdAsync(Guid orderId, CancellationToken ct = default) =>
+        _db.Reviews.FirstOrDefaultAsync(r => r.OrderId == orderId, ct);
+
+    public async Task<IReadOnlyList<Review>> ListByRestaurantAsync(Guid restaurantId, CancellationToken ct = default) =>
+        await _db.Reviews.Where(r => r.RestaurantId == restaurantId).OrderByDescending(r => r.CreatedAtUtc).ToListAsync(ct);
+
+    public async Task AddAsync(Review review, CancellationToken ct = default) =>
+        await _db.Reviews.AddAsync(review, ct);
+}
+
+internal sealed class CouponRepository : ICouponRepository
+{
+    private readonly AppDbContext _db;
+
+    public CouponRepository(AppDbContext db) => _db = db;
+
+    public Task<Coupon?> GetByCodeAsync(string code, CancellationToken ct = default) =>
+        _db.Coupons.FirstOrDefaultAsync(c => c.Code == code, ct);
+
+    public async Task<IReadOnlyList<Coupon>> ListActiveAsync(CancellationToken ct = default) =>
+        await _db.Coupons.Where(c => c.IsActive).OrderBy(c => c.ExpiresAtUtc).ToListAsync(ct);
+
+    public async Task AddAsync(Coupon coupon, CancellationToken ct = default) =>
+        await _db.Coupons.AddAsync(coupon, ct);
+}

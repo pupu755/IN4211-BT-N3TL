@@ -75,7 +75,10 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();
         b.Property(x => x.Status).HasConversion<string>().HasMaxLength(20);
+        b.Property(x => x.CouponCode).HasMaxLength(50);
+        b.Property(x => x.DiscountAmount).HasConversion(MoneyConversion.Converter).HasColumnType("numeric(18,2)");
         b.Ignore(x => x.Total);
+        b.Ignore(x => x.FinalAmount);
         b.HasOne<User>().WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
         b.HasOne<Restaurant>().WithMany().HasForeignKey(x => x.RestaurantId).OnDelete(DeleteBehavior.Restrict);
         b.HasMany(x => x.Items).WithOne().HasForeignKey(i => i.OrderId).OnDelete(DeleteBehavior.Cascade);
@@ -134,5 +137,35 @@ internal sealed class DeliveryConfiguration : IEntityTypeConfiguration<Delivery>
             code.Property(c => c.IsUsed).HasColumnName("CodeIsUsed");
             code.Ignore(c => c.IsLocked);
         });
+    }
+}
+
+internal sealed class ReviewConfiguration : IEntityTypeConfiguration<Review>
+{
+    public void Configure(EntityTypeBuilder<Review> b)
+    {
+        b.ToTable("Reviews");
+        b.HasKey(x => x.Id);
+        b.Property(x => x.Id).ValueGeneratedNever();
+        b.Property(x => x.Comment).HasMaxLength(500);
+        b.HasIndex(x => x.OrderId).IsUnique();
+        b.HasIndex(x => x.RestaurantId);
+        b.HasOne<Order>().WithMany().HasForeignKey(x => x.OrderId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne<User>().WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne<Restaurant>().WithMany().HasForeignKey(x => x.RestaurantId).OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+internal sealed class CouponConfiguration : IEntityTypeConfiguration<Coupon>
+{
+    public void Configure(EntityTypeBuilder<Coupon> b)
+    {
+        b.ToTable("Coupons");
+        b.HasKey(x => x.Id);
+        b.Property(x => x.Id).ValueGeneratedNever();
+        b.Property(x => x.Code).HasMaxLength(50).IsRequired();
+        b.HasIndex(x => x.Code).IsUnique();
+        b.Property(x => x.DiscountAmount).HasConversion(MoneyConversion.Converter).HasColumnType("numeric(18,2)");
+        b.Property(x => x.MinOrderAmount).HasConversion(MoneyConversion.Converter).HasColumnType("numeric(18,2)");
     }
 }
