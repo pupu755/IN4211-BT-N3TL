@@ -24,6 +24,9 @@ public class Delivery
 
     public DeliveryCode? Code { get; private set; }
 
+    /// <summary>Encrypted copy of the code so that only the customer can read it back. Never the plain code.</summary>
+    public string? CustomerCodeCipher { get; private set; }
+
     public bool IsCompleted => DeliveredAtUtc.HasValue;
 
     internal static Delivery Create(Guid orderId, Guid shipperProfileId, DateTime nowUtc) => new()
@@ -35,7 +38,7 @@ public class Delivery
     };
 
     /// <summary>Creates the receipt code when delivery starts (QT03).</summary>
-    public void StartDelivering(string plainCode, DateTime nowUtc)
+    public void StartDelivering(string plainCode, DateTime nowUtc, string? customerCodeCipher = null)
     {
         if (StartedAtUtc.HasValue)
         {
@@ -43,6 +46,7 @@ public class Delivery
         }
 
         Code = DeliveryCode.Create(plainCode, nowUtc);
+        CustomerCodeCipher = customerCodeCipher;
         StartedAtUtc = nowUtc;
     }
 
