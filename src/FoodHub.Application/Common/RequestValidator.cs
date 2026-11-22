@@ -1,0 +1,20 @@
+using FluentValidation;
+
+namespace FoodHub.Application.Common;
+
+internal static class RequestValidator
+{
+    public static async Task EnsureValidAsync<T>(IValidator<T> validator, T request, CancellationToken ct)
+    {
+        var result = await validator.ValidateAsync(request, ct);
+        if (result.IsValid)
+        {
+            return;
+        }
+
+        var errors = result.Errors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+        throw new RequestValidationException(errors);
+    }
+}
