@@ -9,7 +9,7 @@ public class LayerDependencyTests
 {
     private static readonly Assembly DomainAssembly = typeof(DomainAssemblyMarker).Assembly;
     private static readonly Assembly ApplicationAssembly = typeof(ApplicationAssemblyMarker).Assembly;
-    private static readonly Assembly InfrastructureAssembly = typeof(DependencyInjection).Assembly;
+    private static readonly Assembly InfrastructureAssembly = typeof(FoodHub.Infrastructure.DependencyInjection).Assembly;
 
     private static bool References(Assembly assembly, string name) =>
         assembly.GetReferencedAssemblies().Any(a => a.Name == name);
@@ -35,4 +35,5 @@ public class LayerDependencyTests
         Assert.False(References(InfrastructureAssembly, "FoodHub.API"));
     }
 }
+
 
