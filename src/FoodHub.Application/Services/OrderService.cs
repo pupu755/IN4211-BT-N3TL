@@ -16,7 +16,9 @@ public sealed class OrderService
     private readonly IDeliveryFeeStrategy _feeStrategy;
     private readonly IUnitOfWork _uow;
     private readonly IClock _clock;
+    private readonly ICouponRepository _coupons;
     private readonly IValidator<CreateOrderRequest> _createValidator;
+    private readonly IValidator<ApplyCouponRequest> _applyCouponValidator;
 
     public OrderService(
         IOrderRepository orders,
@@ -26,7 +28,9 @@ public sealed class OrderService
         IDeliveryFeeStrategy feeStrategy,
         IUnitOfWork uow,
         IClock clock,
-        IValidator<CreateOrderRequest> createValidator)
+        ICouponRepository coupons,
+        IValidator<CreateOrderRequest> createValidator,
+        IValidator<ApplyCouponRequest> applyCouponValidator)
     {
         _orders = orders;
         _restaurants = restaurants;
@@ -35,7 +39,9 @@ public sealed class OrderService
         _feeStrategy = feeStrategy;
         _uow = uow;
         _clock = clock;
+        _coupons = coupons;
         _createValidator = createValidator;
+        _applyCouponValidator = applyCouponValidator;
     }
 
     public async Task<OrderDto> CreateAsync(Guid customerId, CreateOrderRequest request, CancellationToken ct = default)
@@ -87,6 +93,36 @@ public sealed class OrderService
 
     public Task<OrderDto> MarkReadyAsync(Guid ownerId, Guid orderId, CancellationToken ct = default) =>
         AdvanceAsync(ownerId, orderId, o => o.MarkReadyForPickup(), ct);
+
+    public async Task<OrderDto> ApplyCouponAsync(Guid customerId, Guid orderId, ApplyCouponRequest request, CancellationToken ct = default)
+    {
+        await RequestValidator.EnsureValidAsync(_applyCouponValidator, request, ct);
+        var order = await LoadAsync(orderId, ct);
+        if (order.CustomerId != customerId)
+        {
+            throw new ForbiddenException("This order belongs to another customer.");
+        }
+
+        var coupon = await _coupons.GetByCodeAsync(request.Code.Trim().ToUpperInvariant(), ct)
+            ?? throw new NotFoundException("Coupon not found.");
+
+        order.ApplyCoupon(coupon, _clock.UtcNow);
+        await _uow.SaveChangesAsync(ct);
+        return order.ToDto(_feeStrategy);
+    }
+
+    public async Task<OrderDto> RemoveCouponAsync(Guid customerId, Guid orderId, CancellationToken ct = default)
+    {
+        var order = await LoadAsync(orderId, ct);
+        if (order.CustomerId != customerId)
+        {
+            throw new ForbiddenException("This order belongs to another customer.");
+        }
+
+        order.RemoveCoupon();
+        await _uow.SaveChangesAsync(ct);
+        return order.ToDto(_feeStrategy);
+    }
 
     /// <summary>The customer or the restaurant owner may cancel, but only before Preparing (QT04).</summary>
     public async Task<OrderDto> CancelAsync(Guid userId, Role role, Guid orderId, CancellationToken ct = default)

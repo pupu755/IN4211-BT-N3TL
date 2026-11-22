@@ -32,6 +32,8 @@ public sealed record OrderDto(
     DateTime CreatedAtUtc,
     IReadOnlyList<OrderItemDto> Items,
     decimal Subtotal,
+    string? CouponCode,
+    decimal DiscountAmount,
     decimal DeliveryFee,
     decimal GrandTotal);
 
@@ -40,3 +42,22 @@ public sealed record ConfirmReceiptRequest(string Code);
 public sealed record DeliveryDto(Guid Id, Guid OrderId, DateTime AcceptedAtUtc, DateTime? StartedAtUtc, DateTime? DeliveredAtUtc);
 
 public sealed record DeliveryCodeDto(string Code, DateTime ExpiresAtUtc, bool IsUsed, bool IsLocked);
+
+public sealed record CreateReviewRequest(int Rating, string Comment);
+
+public sealed record ReviewDto(Guid Id, Guid OrderId, Guid CustomerId, Guid RestaurantId, int Rating, string Comment, DateTime CreatedAtUtc);
+
+public sealed record CreateCouponRequest(string Code, decimal DiscountAmount, decimal MinOrderAmount, DateTime ExpiresAtUtc);
+
+public sealed record ApplyCouponRequest(string Code);
+
+public sealed record CouponDto(Guid Id, string Code, decimal DiscountAmount, decimal MinOrderAmount, DateTime ExpiresAtUtc, bool IsActive);
+
+public sealed record RevenueTopItemDto(Guid MenuItemId, string Name, int QuantitySold, decimal TotalAmount);
+
+public sealed record RestaurantRevenueDto(
+    Guid RestaurantId,
+    int TotalDeliveredOrders,
+    decimal TotalRevenue,
+    int CancelledOrders,
+    IReadOnlyList<RevenueTopItemDto> TopSellingItems);

@@ -25,6 +25,10 @@ public class AppDbContext : DbContext
 
     public DbSet<Delivery> Deliveries => Set<Delivery>();
 
+    public DbSet<Review> Reviews => Set<Review>();
+
+    public DbSet<Coupon> Coupons => Set<Coupon>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

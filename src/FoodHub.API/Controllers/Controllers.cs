@@ -77,6 +77,12 @@ public class RestaurantsController : ControllerBase
     [Authorize(Roles = nameof(Role.Restaurant))]
     public async Task<ActionResult<IReadOnlyList<OrderDto>>> ListOrders(Guid id, CancellationToken ct) =>
         Ok(await _orders.ListForRestaurantAsync(User.GetUserId(), id, ct));
+
+    [HttpGet("{id:guid}/statistics")]
+    [Authorize(Roles = nameof(Role.Restaurant))]
+    public async Task<ActionResult<RestaurantRevenueDto>> GetStatistics(
+        Guid id, [FromQuery] DateTime? fromUtc, [FromQuery] DateTime? toUtc, CancellationToken ct) =>
+        Ok(await _restaurants.GetRevenueStatisticsAsync(User.GetUserId(), id, fromUtc, toUtc, ct));
 }
 
 [ApiController]
@@ -134,6 +140,59 @@ public class OrdersController : ControllerBase
     [Authorize(Roles = nameof(Role.Customer))]
     public async Task<ActionResult<DeliveryCodeDto>> GetDeliveryCode(Guid id, CancellationToken ct) =>
         Ok(await _deliveries.GetCodeForCustomerAsync(User.GetUserId(), id, ct));
+
+    [HttpPost("{id:guid}/apply-coupon")]
+    [Authorize(Roles = nameof(Role.Customer))]
+    public async Task<ActionResult<OrderDto>> ApplyCoupon(Guid id, ApplyCouponRequest request, CancellationToken ct) =>
+        Ok(await _orders.ApplyCouponAsync(User.GetUserId(), id, request, ct));
+
+    [HttpPost("{id:guid}/remove-coupon")]
+    [Authorize(Roles = nameof(Role.Customer))]
+    public async Task<ActionResult<OrderDto>> RemoveCoupon(Guid id, CancellationToken ct) =>
+        Ok(await _orders.RemoveCouponAsync(User.GetUserId(), id, ct));
+}
+
+[ApiController]
+[Route("api/reviews")]
+public class ReviewsController : ControllerBase
+{
+    private readonly ReviewService _reviews;
+
+    public ReviewsController(ReviewService reviews) => _reviews = reviews;
+
+    [HttpPost("orders/{orderId:guid}")]
+    [Authorize(Roles = nameof(Role.Customer))]
+    public async Task<ActionResult<ReviewDto>> Create(Guid orderId, CreateReviewRequest request, CancellationToken ct) =>
+        Ok(await _reviews.CreateAsync(User.GetUserId(), orderId, request, ct));
+
+    [HttpGet("restaurants/{restaurantId:guid}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IReadOnlyList<ReviewDto>>> ListByRestaurant(Guid restaurantId, CancellationToken ct) =>
+        Ok(await _reviews.ListByRestaurantAsync(restaurantId, ct));
+}
+
+[ApiController]
+[Route("api/coupons")]
+public class CouponsController : ControllerBase
+{
+    private readonly CouponService _coupons;
+
+    public CouponsController(CouponService coupons) => _coupons = coupons;
+
+    [HttpPost]
+    [Authorize(Roles = nameof(Role.Admin))]
+    public async Task<ActionResult<CouponDto>> Create(CreateCouponRequest request, CancellationToken ct) =>
+        Ok(await _coupons.CreateAsync(request, ct));
+
+    [HttpGet]
+    [Authorize]
+    public async Task<ActionResult<IReadOnlyList<CouponDto>>> ListActive(CancellationToken ct) =>
+        Ok(await _coupons.ListActiveAsync(ct));
+
+    [HttpGet("{code}")]
+    [Authorize]
+    public async Task<ActionResult<CouponDto>> GetByCode(string code, CancellationToken ct) =>
+        Ok(await _coupons.GetByCodeAsync(code, ct));
 }
 
 [ApiController]
