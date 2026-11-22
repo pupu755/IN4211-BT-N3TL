@@ -22,10 +22,17 @@ public class Order
 
     public DateTime CreatedAtUtc { get; private set; }
 
+    public string? CouponCode { get; private set; }
+
+    public Money DiscountAmount { get; private set; } = Money.Zero;
+
     public IReadOnlyCollection<OrderItem> Items => _items;
 
     /// <summary>Sum of unit price times quantity over all items (QT05).</summary>
     public Money Total => _items.Aggregate(Money.Zero, (sum, item) => sum.Add(item.LineTotal));
+
+    /// <summary>Total after deducting coupon discount.</summary>
+    public Money FinalAmount => Total.Amount > DiscountAmount.Amount ? Money.Of(Total.Amount - DiscountAmount.Amount) : Money.Zero;
 
     public static Order Create(Guid customerId, Guid restaurantId, DateTime nowUtc) => new()
     {
@@ -35,6 +42,29 @@ public class Order
         Status = OrderStatus.Pending,
         CreatedAtUtc = nowUtc
     };
+
+    public void ApplyCoupon(Coupon coupon, DateTime nowUtc)
+    {
+        if (Status != OrderStatus.Pending)
+        {
+            throw new DomainException("Coupon can only be applied while the order is pending.");
+        }
+
+        var discount = coupon.CalculateDiscount(Total, nowUtc);
+        CouponCode = coupon.Code;
+        DiscountAmount = discount;
+    }
+
+    public void RemoveCoupon()
+    {
+        if (Status != OrderStatus.Pending)
+        {
+            throw new DomainException("Coupon can only be removed while the order is pending.");
+        }
+
+        CouponCode = null;
+        DiscountAmount = Money.Zero;
+    }
 
     /// <summary>Adds a dish to the order. All dishes must come from the same restaurant (QT01).</summary>
     public void AddItem(MenuItem menuItem, int quantity)
