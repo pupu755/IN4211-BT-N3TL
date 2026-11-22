@@ -6,7 +6,18 @@ Bài tập lớn môn IN4211, đề tài ĐT18 FoodHub. Hệ thống cho khách 
 
 Công nghệ: ASP.NET Core 8 Web API, Clean Architecture 4 tầng, EF Core, PostgreSQL, JWT, Swagger, xUnit và coverlet.
 
-> Trạng thái: đã có Domain, Application, Infrastructure và API. Docker chưa được chạy thử trên máy phát triển, xem docs/BLOCKERS.md.
+> Trạng thái: hoàn thành đầy đủ 4 tầng Clean Architecture, các quy tắc nghiệp vụ QT01–QT05, 3 chức năng mở rộng, 137 ca kiểm thử (92.6% coverage). Docker chưa được chạy thử trên máy phát triển, xem docs/BLOCKERS.md.
+
+## Danh sách chức năng chính
+
+1. **QT01:** Mỗi đơn chỉ gồm món của một quán.
+2. **QT02:** Shipper nhận tối đa 2 đơn chưa giao cùng lúc.
+3. **QT03:** Mã 6 số xác nhận nhận hàng sinh khi bắt đầu giao, có hạn 2 giờ, khóa sau 5 lần nhập sai, lưu dạng salted hash.
+4. **QT04:** Trạng thái đơn đi đúng thứ tự: Pending → Confirmed → Preparing → ReadyForPickup → Delivering → Delivered. Chỉ được hủy trước Preparing.
+5. **QT05:** Tiền dùng Money (decimal không âm); tổng đơn bằng tổng giá nhân số lượng.
+6. **Mở rộng 1:** Đánh giá và nhận xét quán sau khi đơn giao thành công (Bùi Trung Tín).
+7. **Mở rộng 2:** Áp dụng mã giảm giá (Coupon) theo ngưỡng đơn tối thiểu (Thái Văn Toàn).
+8. **Mở rộng 3:** Thống kê doanh thu, số đơn và món bán chạy cho chủ quán (Võ Văn Toàn).
 
 ## Cấu trúc
 
