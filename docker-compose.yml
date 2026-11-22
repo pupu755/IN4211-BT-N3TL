@@ -23,8 +23,11 @@ services:
       Jwt__Key: ${Jwt__Key}
       Jwt__Issuer: ${Jwt__Issuer}
       Jwt__Audience: ${Jwt__Audience}
+      Security__CodeKey: ${Security__CodeKey}
+      Seed__Password: ${Seed__Password}
     ports:
       - "8080:8080"
 
 volumes:
   foodhub-pgdata:
+
