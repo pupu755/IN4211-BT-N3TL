@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6CA5D095-964E-4B98-8289-2DFD0E65F21F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodHub.API", "src\FoodHub.API\FoodHub.API.csproj", "{CE78F1C0-1E11-43CB-9262-EF53C922970C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodHub.Application", "src\FoodHub.Application\FoodHub.Application.csproj", "{3CA6192F-F4BB-4C3A-B8FE-F73C7D01C997}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodHub.Domain", "src\FoodHub.Domain\FoodHub.Domain.csproj", "{087364E2-A18E-4983-9EB5-46CA2FEDE435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodHub.Infrastructure", "src\FoodHub.Infrastructure\FoodHub.Infrastructure.csproj", "{382B12C0-D388-460E-9C93-85CABC3BBDF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0A60C614-2869-45B5-8E2E-898E7C81223E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodHub.Tests", "tests\FoodHub.Tests\FoodHub.Tests.csproj", "{3523BC6C-CC8E-44AD-A66C-84B7A28575E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE78F1C0-1E11-43CB-9262-EF53C922970C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE78F1C0-1E11-43CB-9262-EF53C922970C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE78F1C0-1E11-43CB-9262-EF53C922970C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE78F1C0-1E11-43CB-9262-EF53C922970C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CA6192F-F4BB-4C3A-B8FE-F73C7D01C997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA6192F-F4BB-4C3A-B8FE-F73C7D01C997}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CA6192F-F4BB-4C3A-B8FE-F73C7D01C997}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CA6192F-F4BB-4C3A-B8FE-F73C7D01C997}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087364E2-A18E-4983-9EB5-46CA2FEDE435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087364E2-A18E-4983-9EB5-46CA2FEDE435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087364E2-A18E-4983-9EB5-46CA2FEDE435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087364E2-A18E-4983-9EB5-46CA2FEDE435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{382B12C0-D388-460E-9C93-85CABC3BBDF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{382B12C0-D388-460E-9C93-85CABC3BBDF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{382B12C0-D388-460E-9C93-85CABC3BBDF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{382B12C0-D388-460E-9C93-85CABC3BBDF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3523BC6C-CC8E-44AD-A66C-84B7A28575E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3523BC6C-CC8E-44AD-A66C-84B7A28575E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3523BC6C-CC8E-44AD-A66C-84B7A28575E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3523BC6C-CC8E-44AD-A66C-84B7A28575E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CE78F1C0-1E11-43CB-9262-EF53C922970C} = {6CA5D095-964E-4B98-8289-2DFD0E65F21F}
+		{3CA6192F-F4BB-4C3A-B8FE-F73C7D01C997} = {6CA5D095-964E-4B98-8289-2DFD0E65F21F}
+		{087364E2-A18E-4983-9EB5-46CA2FEDE435} = {6CA5D095-964E-4B98-8289-2DFD0E65F21F}
+		{382B12C0-D388-460E-9C93-85CABC3BBDF8} = {6CA5D095-964E-4B98-8289-2DFD0E65F21F}
+		{3523BC6C-CC8E-44AD-A66C-84B7A28575E4} = {0A60C614-2869-45B5-8E2E-898E7C81223E}
+	EndGlobalSection
+EndGlobal
