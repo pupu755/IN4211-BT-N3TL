@@ -1,5 +1,6 @@
 using FluentValidation;
 using FoodHub.Application.Dtos;
+using FoodHub.Domain.Entities;
 using FoodHub.Domain.Enums;
 using FoodHub.Domain.ValueObjects;
 
@@ -65,5 +66,33 @@ public sealed class ConfirmReceiptRequestValidator : AbstractValidator<ConfirmRe
     public ConfirmReceiptRequestValidator()
     {
         RuleFor(x => x.Code).NotEmpty().Length(DeliveryCode.CodeLength).Matches("^[0-9]+$");
+    }
+}
+
+public sealed class CreateReviewRequestValidator : AbstractValidator<CreateReviewRequest>
+{
+    public CreateReviewRequestValidator()
+    {
+        RuleFor(x => x.Rating).InclusiveBetween(Review.MinRating, Review.MaxRating);
+        RuleFor(x => x.Comment).MaximumLength(Review.MaxCommentLength);
+    }
+}
+
+public sealed class CreateCouponRequestValidator : AbstractValidator<CreateCouponRequest>
+{
+    public CreateCouponRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.DiscountAmount).GreaterThan(0m);
+        RuleFor(x => x.MinOrderAmount).GreaterThanOrEqualTo(0m);
+        RuleFor(x => x.ExpiresAtUtc).NotEmpty();
+    }
+}
+
+public sealed class ApplyCouponRequestValidator : AbstractValidator<ApplyCouponRequest>
+{
+    public ApplyCouponRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
     }
 }

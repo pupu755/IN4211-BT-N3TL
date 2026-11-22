@@ -97,6 +97,24 @@ public interface IDeliveryRepository
     Task<Delivery?> GetByOrderIdAsync(Guid orderId, CancellationToken ct = default);
 }
 
+public interface IReviewRepository
+{
+    Task<Review?> GetByOrderIdAsync(Guid orderId, CancellationToken ct = default);
+
+    Task<IReadOnlyList<Review>> ListByRestaurantAsync(Guid restaurantId, CancellationToken ct = default);
+
+    Task AddAsync(Review review, CancellationToken ct = default);
+}
+
+public interface ICouponRepository
+{
+    Task<Coupon?> GetByCodeAsync(string code, CancellationToken ct = default);
+
+    Task<IReadOnlyList<Coupon>> ListActiveAsync(CancellationToken ct = default);
+
+    Task AddAsync(Coupon coupon, CancellationToken ct = default);
+}
+
 /// <summary>Strategy that decides the delivery fee for an order subtotal.</summary>
 public interface IDeliveryFeeStrategy
 {

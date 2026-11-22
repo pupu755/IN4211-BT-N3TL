@@ -16,6 +16,8 @@ public static class DependencyInjection
         services.AddScoped<RestaurantService>();
         services.AddScoped<OrderService>();
         services.AddScoped<DeliveryService>();
+        services.AddScoped<ReviewService>();
+        services.AddScoped<CouponService>();
 
         services.AddSingleton<IDeliveryFeeStrategy>(_ => new FreeShippingOverThresholdStrategy());
         return services;
