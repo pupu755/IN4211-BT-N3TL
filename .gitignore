@@ -483,3 +483,7 @@ $RECYCLE.BIN/
 
 coverage-report/
 TestResults/
+
+*.db
+*.db-*
+
