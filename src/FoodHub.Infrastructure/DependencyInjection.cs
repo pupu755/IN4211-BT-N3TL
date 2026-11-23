@@ -11,13 +11,22 @@ namespace FoodHub.Infrastructure;
 
 public static class DependencyInjection
 {
-    /// <summary>Registers everything including the PostgreSQL DbContext.</summary>
+    /// <summary>Registers everything including the DbContext (PostgreSQL or SQLite).</summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Default")
             ?? throw new InvalidOperationException("Missing environment variable ConnectionStrings__Default.");
 
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        if (connectionString.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase)
+            || connectionString.StartsWith("Filename=", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
+        }
+        else
+        {
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        }
+
         return services.AddInfrastructureServices(configuration);
     }
 

@@ -111,6 +111,18 @@ if (!string.Equals(app.Configuration["Database:AutoMigrate"], "false", StringCom
         await DbSeeder.SeedAsync(db, scope.ServiceProvider.GetRequiredService<IPasswordHasher>(), seedPassword);
     }
 }
+else if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.EnsureCreatedAsync();
+
+    var seedPassword = app.Configuration["Seed:Password"];
+    if (!string.IsNullOrWhiteSpace(seedPassword))
+    {
+        await DbSeeder.SeedAsync(db, scope.ServiceProvider.GetRequiredService<IPasswordHasher>(), seedPassword);
+    }
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseSwagger();
